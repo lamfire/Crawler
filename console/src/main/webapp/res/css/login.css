@@ -1,0 +1,16 @@
+@charset "utf-8";
+html{height:100%;overflow:hidden;}
+body {background:#68a;background:-webkit-gradient(linear,0% 0,0% 100%,from(#fff),to(#369));height:100%;overflow:hidden;margin:0;padding:0;color:#333;text-align:center; line-height: 215%;font:12px/1.6em Arial, Helvetica, sans-serif;}
+.login-bg{border-top:1px solid #fff;border-bottom:1px solid #fff;background: #369;background:-webkit-gradient(linear,0% 0,0% 100%,from(#369),to(#036));padding:10px 0;}
+.login-bg p{color:#fff;}
+.loginBar{height:300px;width:812px;margin :0 auto;padding:50px;position:relative;}
+.loginBar .logo{height:300px;width:400px;float:left;}
+.loginBar .loginbox{opacity:0;position:absolute;height:300px;width:400px;float:left;padding:5px;}
+.loginbox p{margin:8px 0px;width:100%;line-height: 20px;zoom:1;clear:both;color:#369;}
+.loginbox p:after {content:"."; display:block; clear:both; visibility:hidden; height:0;}
+.loginbox h1 {margin:1em 0 1em 1em;color:#036;font-size:24px;text-shadow:rgba(0, 0, 0,.25) 0  0  .1em;letter-spacing: 1px;}
+.loginbox label {text-align:right;float:left;width:5em;padding:.3em 0;color:#666;font-size:14px;}
+.loginbox input{width:180px;}
+.loginbox a,.loginbox img{vertical-align:middle;float:none;}
+.loginbox button {width:8em;float:none;margin:0 4em 0 0;border:1px solid #06c;padding:.5em 1em .5em 2em;-moz-border-radius: .6em;border-radius: .6em;background:#036;background:-webkit-gradient(linear,0% 0,0% 100%,from(#06c),to(#036));color:#fff;letter-spacing:1em;}
+.loginbox button:hover {outline: none;background:#abf;color:#000;}

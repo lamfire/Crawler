@@ -1,0 +1,39 @@
+/*header*/
+.page-header {position:relative;height:100px;background:#036;background:-webkit-gradient(linear,0% 0,0% 100%,from(#06c),to(#036));}
+.page-main:after {content:"."; display:block; clear:both; visibility:hidden;height:0;}
+.page-header em {color:#fc0;}
+.page-header a {color:#ccc;text-decoration: none;}
+.page-header a:hover{color:#f50;}
+.page-header .logo{position:absolute;}
+.page-header .title{position:absolute;left:10px;top:30px;font-size:18px;color:#fff;font-weight:bold;line-height: 32px;text-shadow:rgba(255,255,0,1) 0 0 1em}
+.page-header .wellcome{position:absolute;text-align: right;width:100%;color:#fff;top:50px;}
+
+/*footer*/
+.page-footer {display:block;width:100%;height:4em;position:relative;background:#333;color:#f0f0f0;line-height:4em;text-align:center;}
+
+/*main*/
+.page-main {zoom:1;position:relative;margin-top:-20px;display:block;width:100%;}
+.page-main:after {content:"."; display:block; clear:both; visibility:hidden;height:0;}
+.page-main .left {width:15%;float:left;zoom:1;position: static;}
+.page-main .main {}
+
+/*左边菜单区域*/
+.left{}
+.menu{padding-top:20px;}
+.menu strong {display:block;background:#cecece;background:-webkit-gradient(linear,0% 0,0% 100%,from(#cecece),to(#bbb)) no-repeat;padding:.5em;text-indent:1em;border-bottom:.1em solid #777;cursor: pointer;}
+.menu strong:hover {color:#038;background:#efe;-moz-box-shadow:rgba(0,0,0,.3) 0 0 .6em;-webkit-box-shadow:rgba(0,0,0,.3) 0 0 .6em;}
+.menu ul {overflow:hidden;}
+.menu li {padding:.5em;text-indent:2em;border-bottom:.1em solid #c1c1c1;background:#efefef;background:-webkit-gradient(linear,0% 0,0% 100%,from(#eee),to(#efefef));}
+.menu .act {background:#ebf5ff;background:-webkit-gradient(linear,0% 0,0% 100%,from(#ebf5ff),to(#dceeff));border-bottom:.1em solid #c3d7ea;}
+
+/*主要显示区域*/
+.main{background:#fefefe;background:-webkit-gradient(linear,0% 0,0% 100%,from(#f5f5f5),to(#fefefe));overflow: hidden;}
+.main .wapper {width:100%;min-height:50em;}
+.main h2 {height:45px;line-height:45px;padding-left:20px;color:#fff;border-bottom:1px solid #333;background:#666;background:-webkit-gradient(linear,0% 0,0% 100%,from(#999),to(#666));text-shadow:rgba(255,255,0,.8) 0 0 1em}
+.main .view{padding:2em;overflow:auto;}
+
+/*弹窗显示区域*/
+.winbox{width:100%;position:relative;background:#fefefe;background:-webkit-gradient(linear,0% 0,0% 100%,from(#f5f5f5),to(#fefefe));overflow: hidden;}
+.winbox h2 {width:100%;height:45px;line-height:45px;padding-left:20px;color:#fff;border-bottom:1px solid #333;background:#666;background:-webkit-gradient(linear,0% 0,0% 100%,from(#999),to(#666));text-shadow:rgba(255,255,255,.8) 0 0 .1em}
+.winbox .wapper {width:100%;min-height:50em;overflow: hidden;}
+.winbox .view{padding:2em;overflow:auto;}
