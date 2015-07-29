@@ -2,6 +2,7 @@ package com.lamfire.crawler;
 
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Lists;
+import com.lamfire.utils.Maps;
 import com.lamfire.utils.Sets;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkDataListener;
@@ -9,6 +10,7 @@ import org.I0Itec.zkclient.ZkClient;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -24,14 +26,16 @@ public class ZkCrawlerAddressMgr implements CrawlerAddressMgr {
     private static final Logger LOGGER = Logger.getLogger(ZkCrawlerAddressMgr.class);
     public static final String AGENTS_NODE_PATH = "/crawler/agents";
 
-    private Lock lock = new ReentrantLock();
-    private final Set<String> agentAddresses = Sets.newHashSet();
-    private ZkClient zkClient;
-
     public ZkCrawlerAddressMgr(ZkClient zkClient){
         this.zkClient = zkClient;
         init();
     }
+
+    private Lock lock = new ReentrantLock();
+    private final Map<String,String> crawlerNodes = Maps.newConcurrentMap();
+    private ZkClient zkClient;
+
+
 
     private void init(){
         initAndSubscriptAgentAddressesFromZkServer();
@@ -42,78 +46,117 @@ public class ZkCrawlerAddressMgr implements CrawlerAddressMgr {
         zkClient.subscribeChildChanges(AGENTS_NODE_PATH,new IZkChildListener() {
             @Override
             public void handleChildChange(String s, List<String> strings) throws Exception {
-                LOGGER.debug("agent node changed,refreshing...");
+                LOGGER.debug("node node changed,refreshing...");
                 updateAgentAddressesFromZkServer(strings);
             }
         }) ;
     }
 
-    private void subscribeAgentNodeDataChanged(String path){
+    private void subscribeNodeDataChanged(String path){
         zkClient.subscribeDataChanges(path,new IZkDataListener() {
             @Override
-            public void handleDataChange(String s, Object o) throws Exception {
-                LOGGER.debug("handleDataDeleted : " + s + "=" +o);
+            public void handleDataChange(String path, Object o) throws Exception {
+                LOGGER.debug("handleDataChange : " + path +" = " + o );
+                String url = zkClient.readData(path);
+                LOGGER.debug("readData : " + url );
+                crawlerNodes.put(path,url);
             }
 
             @Override
             public void handleDataDeleted(String s) throws Exception {
                 LOGGER.debug("handleDataDeleted : " + s);
+                crawlerNodes.remove(s);
             }
         });
     }
 
-    private void subscribeAgentNodeDataChanged(List<String> agents){
-        if(agents == null || agents.isEmpty()){
+    private void subscribeAgentNodeDataChanged(List<String> nodeNames){
+        if(nodeNames == null || nodeNames.isEmpty()){
             return;
         }
 
         List<String> addressList = Lists.newArrayList();
-        for(String path : agents){
+        for(String path : nodeNames){
             path = AGENTS_NODE_PATH+"/"+path;
             LOGGER.debug("path : " + path);
-            subscribeAgentNodeDataChanged(path);
+            subscribeNodeDataChanged(path);
         }
 
     }
 
-    private void updateAgentAddressesFromZkServer(List<String> paths){
-        if(paths == null || paths.isEmpty()){
+    private void updateAgentAddressesFromZkServer(List<String> nodeNames){
+        if(nodeNames == null || nodeNames.isEmpty()){
             return;
         }
         lock.lock();
+        crawlerNodes.clear();
         try{
-            List<String> addressList = Lists.newArrayList();
-            for(String path : paths){
-                path = AGENTS_NODE_PATH+"/"+path;
+            for(String name : nodeNames){
+                String path = AGENTS_NODE_PATH+"/"+name;
                 LOGGER.debug("path : " + path);
                 String agentAddress = zkClient.readData(path,true);
+                LOGGER.debug("data : " + agentAddress);
                 if(agentAddress != null){
-                    addressList.add(agentAddress);
-                    LOGGER.debug("add agent node : " + agentAddress);
+                    crawlerNodes.put(name,agentAddress);
+                    LOGGER.debug("add crawler node ["+name+"] : " + agentAddress);
                 }
             }
-            agentAddresses.clear();
-            agentAddresses.addAll(addressList);
+        }catch (Exception e){
+            e.printStackTrace();
         }finally {
             lock.unlock();
         }
     }
 
     private void initAndSubscriptAgentAddressesFromZkServer(){
-        List<String> paths = zkClient.getChildren(AGENTS_NODE_PATH);
-        updateAgentAddressesFromZkServer(paths);
-        subscribeAgentNodeDataChanged(paths);
+        List<String> names = zkClient.getChildren(AGENTS_NODE_PATH);
+        updateAgentAddressesFromZkServer(names);
+        subscribeAgentNodeDataChanged(names);
     }
 
-    @Override
     public Collection<String> getCrawlerAddresses() {
         lock.lock();
         try{
-            return agentAddresses;
+            return crawlerNodes.values();
         }finally{
             lock.unlock();
         }
     }
 
+    public void flush(){
+        lock.lock();
+        try{
+            List<String> names = zkClient.getChildren(AGENTS_NODE_PATH);
+            updateAgentAddressesFromZkServer(names);
+        }finally{
+            lock.unlock();
+        }
+    }
 
+    public Set<String> getNodeNames(){
+        lock.lock();
+        try{
+            return crawlerNodes.keySet();
+        }finally{
+            lock.unlock();
+        }
+    }
+
+    public Map<String,String> getAllCrawlerNodes(){
+        lock.lock();
+        try{
+            return this.crawlerNodes;
+        }finally{
+            lock.unlock();
+        }
+    }
+
+    public String getNodeUrl(String name){
+        lock.lock();
+        try{
+            return this.crawlerNodes.get(name);
+        }finally{
+            lock.unlock();
+        }
+    }
 }
