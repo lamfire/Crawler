@@ -7,6 +7,9 @@
 <div class="page-header">
 	<span class="title">欢迎使用 Crawler Console v1.0.0</span>
     <div class="wellcome">
+        <a id="chpassword" href="${pageContext.request.contextPath}/box_password.jsp">${ADMIN.account}</a>
+        |
+        <a href="${pageContext.request.contextPath}/logout.do">退出</a>
     </div>
 </div>
 <script type="text/javascript">

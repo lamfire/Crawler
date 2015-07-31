@@ -51,6 +51,6 @@
 
 	<filter-mapping>
 		<filter-name>Dispatcher</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
 </web-app>
